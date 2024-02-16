@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import Icon from "../Assests/icon.png";
+import cloud from "../Assests/cloud.png";
 
 function Home() {
     return (
@@ -66,10 +66,10 @@ function Home() {
                         <select name="" id="">
                             <option value="">Select Country</option>
                             <option value="India">India</option>
-                            <option value="USA">USA</option>
-                            <option value="UK">UK</option>
-                            <option value=""></option>
-                            <option value=""></option>
+                            <option value="United States">United States</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Canada">Canada</option>
                         </select>
                     </div>
                     <div className='field'>
@@ -79,10 +79,31 @@ function Home() {
                         </div>
                         <select name="" id="">
                             <option value="">Select State</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
+                            <option value="California">California</option>
+                            <option value="Texas">Texas</option>
+                            <option value="New York">New York</option>
+                            <option value="Florida">Florida</option>
+                            <option value="Illinois">Illinois</option>
+                            <option value="New South Wales">New South Wales</option>
+                            <option value="Queensland">Queensland</option>
+                            <option value="Victoria">Victoria</option>
+                            <option value="Western Australia">Western Australia</option>
+                            <option value="South Australia">South Australia</option>
+                            <option value="Ontario">Ontario</option>
+                            <option value="Quebec">Quebec</option>
+                            <option value="British Columbia">British Columbia</option>
+                            <option value="Alberta">Alberta</option>
+                            <option value="Manitoba">Manitoba</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Gauteng">Gauteng</option>
+                            <option value="Western Cape">Western Cape</option>
+                            <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                            <option value="Eastern Cape">Eastern Cape</option>
+                            <option value="Mpumalanga">Mpumalanga</option>
                         </select>
                     </div>
                     <div className='field'>
@@ -103,13 +124,19 @@ function Home() {
                         <div className='span'>
                             <p>Opening Time *</p>
                         </div>
-                        <input type="time" />
+                        <div className='combine'>
+                            <input type="time" min={"00:00"} max={"12:00"} />
+                            <p>AM</p>
+                        </div>
                     </div>
                     <div className='field'>
                         <div className='span'>
                             <p>Closing Time *</p>
                         </div>
-                        <input type="time" />
+                        <div className='combine'>
+                            <input type="time" min={"12:01"} max={"24:00"} />
+                            <p>PM</p>
+                        </div>
                     </div>
                     <div className='field'>
                         <div className='span'>
@@ -130,6 +157,24 @@ function Home() {
                             <input type="text" />
                             <button>Send OTP</button>
                         </div>
+                    </div>
+                    <div>
+                        <div className='span'>
+                            <p>Upload some images of your Restaurant *</p>
+                            <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
+                        </div>
+                        <div className='fileInput'>
+                            <input type="file" />
+                            <img src={cloud} alt="" />
+                            <p>Click to upload</p>
+                        </div>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div className='nextButton'>
+                        <Link to={"/ownerdetails"}>
+                            <button>Proceed to Owner & Manager Details →</button>
+                        </Link>
                     </div>
                 </div>
             </div>
