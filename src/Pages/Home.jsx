@@ -1,9 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import cloud from "../Assests/cloud.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { update } from '../Redux/HomeReducer/HomeReducer';
 
 function Home() {
+    const HomeForm = useSelector((state) => state.home);
+    const [emailOtp, setEmailOtp] = useState("");
+    const [mobileOtp, setMobileOtp] = useState("");
+
+    const dispatch = useDispatch();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        dispatch(update({ field: name, value }));
+    };
+    const storeImage = (e) => {
+        const { name } = e.target;
+        let file = e.target.files[0];
+        dispatch(update({ field: name, value: URL.createObjectURL(file) }));
+    }
+
+    const getEmailOtp = async () => {
+        try {
+            if (HomeForm.email == "") {
+                return;
+            }
+            let res = await fetch(`https://bookmyticket-vpuj.onrender.com/movies`, {
+                method: "GET"
+            })
+            let data = await res.json();
+            const digits = '0123456789';
+            let otp = '';
+            for (let i = 0; i < 5; i++) {
+                otp += digits[Math.floor(Math.random() * 10)];
+            }
+            setEmailOtp(otp);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getMobileOtp = async () => {
+        try {
+            if (HomeForm.mobileNumber == "") {
+                return;
+            }
+            let res = await fetch(`https://bookmyticket-vpuj.onrender.com/movies`, {
+                method: "GET"
+            })
+            let data = await res.json();
+            const digits = '0123456789';
+            let otp = '';
+            for (let i = 0; i < 5; i++) {
+                otp += digits[Math.floor(Math.random() * 10)];
+            }
+            setMobileOtp(otp);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className='homeMain'>
             <div className='left'>
@@ -56,14 +113,14 @@ function Home() {
                             <p>Business Name *</p>
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
-                        <input type="text" />
+                        <input type="text" placeholder="Eg. Domino' s Pizza" name='businessName' value={HomeForm.businessName} onChange={handleChange} />
                     </div>
                     <div className='field'>
                         <div className='span'>
                             <p>Country</p>
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
-                        <select name="" id="">
+                        <select name="country" id="" value={HomeForm.country} onChange={handleChange}>
                             <option value="">Select Country</option>
                             <option value="India">India</option>
                             <option value="United States">United States</option>
@@ -77,7 +134,7 @@ function Home() {
                             <p>State *</p>
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
-                        <select name="" id="">
+                        <select name="state" id="" value={HomeForm.state} onChange={handleChange}>
                             <option value="">Select State</option>
                             <option value="California">California</option>
                             <option value="Texas">Texas</option>
@@ -111,21 +168,21 @@ function Home() {
                             <p>City *</p>
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
-                        <input type="text" />
+                        <input type="text" value={HomeForm.city} name='city' onChange={handleChange} />
                     </div>
                     <div className='field'>
                         <div className='span'>
                             <p>Address *</p>
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
-                        <input type="text" />
+                        <input type="text" name='address' value={HomeForm.address} onChange={handleChange} />
                     </div>
                     <div className='field'>
                         <div className='span'>
                             <p>Opening Time *</p>
                         </div>
                         <div className='combine'>
-                            <input type="time" min={"00:00"} max={"12:00"} />
+                            <input type="time" min={"00:00"} max={"12:00"} name='openingTime' value={HomeForm.openingTime} onChange={handleChange} />
                             <p>AM</p>
                         </div>
                     </div>
@@ -134,7 +191,7 @@ function Home() {
                             <p>Closing Time *</p>
                         </div>
                         <div className='combine'>
-                            <input type="time" min={"12:01"} max={"24:00"} />
+                            <input type="time" min={"12:01"} max={"24:00"} name='closingTime' value={HomeForm.closingTime} onChange={handleChange} />
                             <p>PM</p>
                         </div>
                     </div>
@@ -144,9 +201,10 @@ function Home() {
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
                         <div className='combine'>
-                            <input type="text" />
-                            <button>Send OTP</button>
+                            <input type="email" name='email' value={HomeForm.email} onChange={handleChange} />
+                            <button onClick={getEmailOtp}>Send OTP</button>
                         </div>
+                        {emailOtp !== "" && <input type="text" value={emailOtp} className='otpField' onChange={() => { }} />}
                     </div>
                     <div className='field'>
                         <div className='span'>
@@ -154,9 +212,10 @@ function Home() {
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
                         <div className='combine'>
-                            <input type="text" />
-                            <button>Send OTP</button>
+                            <input type="number" name='mobileNumber' value={HomeForm.mobileNumber} onChange={handleChange} />
+                            <button onClick={getMobileOtp}>Send OTP</button>
                         </div>
+                        {mobileOtp !== "" && <input type="text" value={mobileOtp} className='otpField' onChange={() => { }} />}
                     </div>
                     <div>
                         <div className='span'>
@@ -164,9 +223,12 @@ function Home() {
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
                         <div className='fileInput'>
-                            <input type="file" />
-                            <img src={cloud} alt="" />
-                            <p>Click to upload</p>
+                            <input type="file" name='image' onChange={storeImage} />
+                            {HomeForm.image === "" ? <>
+                                <img src={cloud} alt="" />
+                                <p>Click to upload</p>
+                            </>
+                                : <img src={HomeForm.image} alt='image' />}
                         </div>
                     </div>
                     <div></div>

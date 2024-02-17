@@ -1,9 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 import cloud from "../Assests/cloud.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { updateForm } from '../Redux/OwnerReducer/OwnerReducer';
 
 function OwnerDetails() {
+    const OwnerForm = useSelector((state) => state.owner);
+    const [emailOtp, setEmailOtp] = useState("");
+    const [mobileOtp, setMobileOtp] = useState("");
+
+    const dispatch = useDispatch();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        dispatch(updateForm({ field: name, value }));
+    };
+    const storeImage = (e) => {
+        const { name } = e.target;
+        let file = e.target.files[0];
+        dispatch(updateForm({ field: name, value: URL.createObjectURL(file) }));
+    }
+
+    const getEmailOtp = async () => {
+        try {
+            if (OwnerForm.email == "") {
+                return;
+            }
+            let res = await fetch(`https://bookmyticket-vpuj.onrender.com/movies`, {
+                method: "GET"
+            })
+            let data = await res.json();
+            const digits = '0123456789';
+            let otp = '';
+            for (let i = 0; i < 5; i++) {
+                otp += digits[Math.floor(Math.random() * 10)];
+            }
+            setEmailOtp(otp);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getMobileOtp = async () => {
+        try {
+            if (OwnerForm.mobileNumber == "") {
+                return;
+            }
+            let res = await fetch(`https://bookmyticket-vpuj.onrender.com/movies`, {
+                method: "GET"
+            })
+            let data = await res.json();
+            const digits = '0123456789';
+            let otp = '';
+            for (let i = 0; i < 5; i++) {
+                otp += digits[Math.floor(Math.random() * 10)];
+            }
+            setMobileOtp(otp);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className='homeMain'>
             <div className='left'>
@@ -58,23 +115,26 @@ function OwnerDetails() {
                         <div className='span'>
                             <p>Full Name *</p>
                         </div>
-                        <input type="text" placeholder='Eg. Prabhat Kumar, Sushma Singh' />
+                        <input type="text" placeholder='Eg. Prabhat Kumar, Sushma Singh' name='fullName' value={OwnerForm.fullName} onChange={handleChange} />
                     </div>
                     <div className='field2'>
                         <div className='span'>
                             <p>Profile pic *</p>
                         </div>
                         <div className='fileInput'>
-                            <input type="file" />
-                            <img src={cloud} alt="" />
-                            <p>Click to upload</p>
+                            <input type="file" name='image' onChange={storeImage} />
+                            {OwnerForm.image === "" ? <>
+                                <img src={cloud} alt="" />
+                                <p>Click to upload</p>
+                            </>
+                                : <img src={OwnerForm.image} alt='image' />}
                         </div>
                     </div>
                     <div className='field2'>
                         <div className='span'>
                             <p>State *</p>
                         </div>
-                        <select name="" id="">
+                        <select name="state" id="" value={OwnerForm.state} onChange={handleChange}>
                             <option value=""></option>
                         </select>
                     </div>
@@ -82,19 +142,19 @@ function OwnerDetails() {
                         <div className='span'>
                             <p>City *</p>
                         </div>
-                        <input type="text" />
+                        <input type="text" name='city' value={OwnerForm.city} onChange={handleChange} />
                     </div>
                     <div className='field2'>
                         <div className='span'>
                             <p>Country *</p>
                         </div>
-                        <input type="text" />
+                        <input type="text" name='country' value={OwnerForm.country} onChange={handleChange} />
                     </div>
                     <div className='field2'>
                         <div className='span'>
                             <p>Address *</p>
                         </div>
-                        <input type="text" />
+                        <input type="text" name='address' value={OwnerForm.address} onChange={handleChange} />
                     </div>
                     <div className='field2'>
                         <div className='span'>
@@ -102,15 +162,16 @@ function OwnerDetails() {
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
                         <div className='combine'>
-                            <input type="text" />
-                            <button>Send OTP</button>
+                            <input type="email" name='email' value={OwnerForm.email} onChange={handleChange} />
+                            <button onClick={getEmailOtp}>Send OTP</button>
                         </div>
                         <div className='checks'>
                             <p>Same as business e-mail</p>
-                            <label for="myCheckbox" class="custom-checkbox">
+                            <label for="myCheckbox" className="custom-checkbox">
                                 <input type="checkbox" id="myCheckbox" />
                             </label>
                         </div>
+                        {emailOtp !== "" && <input type="text" value={emailOtp} className='otpField' onChange={() => { }} />}
                     </div>
                     <div className='field2'>
                         <div className='span'>
@@ -118,15 +179,16 @@ function OwnerDetails() {
                             <IoMdInformationCircleOutline size={"20px"} fontWeight={500} />
                         </div>
                         <div className='combine'>
-                            <input type="text" />
-                            <button>Send OTP</button>
+                            <input type="number" name='mobileNumber' value={OwnerForm.mobileNumber} onChange={handleChange} />
+                            <button onClick={getMobileOtp}>Send OTP</button>
                         </div>
                         <div className='checks'>
                             <p>Same as business mobile number</p>
-                            <label for="myCheckbox" class="custom-checkbox">
+                            <label for="myCheckbox" className="custom-checkbox">
                                 <input type="checkbox" id="myCheckbox" />
                             </label>
                         </div>
+                        {mobileOtp !== "" && <input type="text" value={mobileOtp} className='otpField' onChange={() => { }} />}
                     </div>
                     <div></div>
                     <div></div>
